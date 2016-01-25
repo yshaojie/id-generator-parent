@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true" scanPeriod="60 seconds">
+
+    <if condition=' isNull("server_log_home") '>
+        <then>
+            <!-- 控制台输出日志 -->
+            <appender name="TARGET" class="ch.qos.logback.core.ConsoleAppender">
+                <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                    <pattern>%d{MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+                </encoder>
+            </appender>
+        </then>
+        <else>
+            <appender name="TARGET" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <Encoding>UTF-8</Encoding>
+                <File>${server_log_home}/${server_name}.log</File>
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <FileNamePattern>${server_log_home}/logbak/${server_name}.log_%d{yyyy-MM-dd}.zip</FileNamePattern>
+                    <maxHistory>30</maxHistory>
+                </rollingPolicy>
+                <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                    <pattern>%d{MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+                </encoder>
+            </appender>
+        </else>
+    </if>
+    <logger name="org.springframework" level="INFO"></logger>
+    <root level="INFO">
+        <appender-ref ref="TARGET"/>
+    </root>
+</configuration>
