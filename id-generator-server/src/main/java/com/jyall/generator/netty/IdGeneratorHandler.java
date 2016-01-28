@@ -22,8 +22,17 @@ public class IdGeneratorHandler extends SimpleChannelInboundHandler<Integer>{
     public IdGeneratorHandler(CommonShardIdGenerator commonShardIdGenerator){
         this.commonShardIdGenerator = commonShardIdGenerator;
     }
-    @Override public void channelActive(ChannelHandlerContext ctx) throws Exception{
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception{
         super.channelActive(ctx);
+        logger.info("client connection success,remoteAddress={}",ctx.channel().remoteAddress());
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+        logger.info("client connection close,remoteAddress={}",ctx.channel().remoteAddress());
     }
 
     @Override protected void channelRead0(ChannelHandlerContext ctx, Integer idType) throws Exception{

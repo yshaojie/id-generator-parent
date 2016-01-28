@@ -1,11 +1,16 @@
 package com.jyall.generator.demo;
 
+import com.google.common.io.Files;
 import com.jyall.generator.DistributedIdGeneratorClient;
 import com.jyall.generator.common.zookeeper.ZKClient;
 import com.jyall.generator.core.WaitException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -19,38 +24,43 @@ import java.util.concurrent.atomic.AtomicLong;
 public class DistributedIdDemo {
     private static final Logger logger = LoggerFactory.getLogger(DistributedIdDemo.class);
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
         ZKClient zkClient = ZKClient.getClient("localhost:2181");
         final DistributedIdGeneratorClient client = new DistributedIdGeneratorClient(zkClient);
-        final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(5, 10,
+        final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10, 10,
                 1L, TimeUnit.HOURS,
-                new LinkedBlockingQueue<Runnable>(100));
+                new LinkedBlockingQueue<Runnable>(1000000));
         final AtomicLong count = new AtomicLong();
         final AtomicLong count1 = new AtomicLong();
-        while (true){
-//            final long dd = count1.incrementAndGet();
-//            if (dd % 10 == 0) {
-//                System.out.println("===========>dd="+dd);
-//            }
+        final File target = new File("/home/shaojieyue/mm.txt");
+        target.deleteOnExit();
+        target.createNewFile();
+        final FileWriter fileWriter = new FileWriter(target);
+        final long start = System.currentTimeMillis();
+        for (int i = 0; ; i++) {
             try {
                 threadPoolExecutor.submit(new Runnable() {
                     public void run() {
-                    try {
-                        final long id = client.nextCommonId();
-                        if (id > 0) {
-                            final long counter = count.incrementAndGet();
-                            if (counter % 100 == 0) {
-                                System.out.println("============>"+counter);
+                        try {
+                            final long id = client.nextCommonId();
+//                            fileWriter.write(id+"\n");
+                            if (id > 0) {
+                                final long counter = count.incrementAndGet();
+                                if (counter % 100000 == 0) {
+                                    System.out.println("============>"+counter);
+                                    fileWriter.flush();
+                                }
+//                                if (counter == 100000) {
+//                                    fileWriter.close();
+//                                    System.out.println("----------->"+(System.currentTimeMillis()-start));
+//                                }
                             }
+                        } catch (Throwable e) {
+                            e.printStackTrace();
                         }
-//            System.out.println(id);
-                    } catch (Throwable e) {
-                        e.printStackTrace();
-                    }
                     }
                 });
             }catch (Throwable e){}
-
         }
 
     }

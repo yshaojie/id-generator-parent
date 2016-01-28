@@ -23,7 +23,6 @@ public class CommonShardIdGenerator extends ShardIdGenerator {
 
     private volatile long lastTimestamp = -1L;
     private volatile long sequence = 0L;
-
     /**
      * @param shardId 分片id
      */
@@ -47,19 +46,6 @@ public class CommonShardIdGenerator extends ShardIdGenerator {
             sequence = 0;//已经过了最后记录的时间，序列号重新累加
         }
         lastTimestamp = timestamp;
-        try{
-            if(new Random().nextInt()%13==0){
-
-                final int millis = new Random().nextInt()%100;
-                if(millis>0){
-                    Thread.sleep(millis);
-                }
-            }else {
-
-            }
-        }catch(InterruptedException e){
-            e.printStackTrace();
-        }
         return combine(timestamp,sequence);
     }
 
@@ -87,12 +73,5 @@ public class CommonShardIdGenerator extends ShardIdGenerator {
             timestamp = System.currentTimeMillis();
         }
         return timestamp;
-    }
-
-    public static void main(String[] args) throws InvalidSystemClockException{
-        CommonShardIdGenerator generator1 = new CommonShardIdGenerator(3);
-        CommonShardIdGenerator generator2 = new CommonShardIdGenerator(3);
-        System.out.println(generator1.nextId());
-        System.out.println(generator2.nextId());
     }
 }
