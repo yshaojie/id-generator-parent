@@ -1,4 +1,4 @@
-package com.jyall.generator;
+package com.jyall.generator.core;
 
 import com.jyall.generator.exception.InvalidSystemClockException;
 

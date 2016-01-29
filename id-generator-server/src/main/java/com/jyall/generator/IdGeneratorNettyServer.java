@@ -1,6 +1,9 @@
 package com.jyall.generator;
 
 import com.jyall.generator.common.SystemConfig;
+import com.jyall.generator.core.CommonShardIdGenerator;
+import com.jyall.generator.core.IdGeneratorServer;
+import com.jyall.generator.core.OrderIdGenerator;
 import com.jyall.generator.core.ShardIdPreemption;
 import com.jyall.generator.netty.IdGeneratorHandler;
 import com.jyall.generator.netty.IdRequestDecoder;
@@ -27,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * id 生成器 server netty 实现
  * Created by shaojieyue on 11/8/15.
  */
-public class IdGeneratorNettyServer implements IdGeneratorServer{
+public class IdGeneratorNettyServer implements IdGeneratorServer {
     public static final Logger logger = LoggerFactory.getLogger(IdGeneratorNettyServer.class);
     private Channel serverChannel;
     private InetSocketAddress socketAddress;
@@ -60,6 +63,7 @@ public class IdGeneratorNettyServer implements IdGeneratorServer{
         ServerBootstrap bootstrap = new ServerBootstrap(); // (2)
         //保证IdGenerator的单个实例
         final CommonShardIdGenerator commonShardIdGenerator = new CommonShardIdGenerator(this.shardId);
+        final OrderIdGenerator orderIdGenerator = new OrderIdGenerator(this.shardId);
         bootstrap.group(bossGroup, workerGroup)
             .channel(NioServerSocketChannel.class) // (3)
             .childHandler(new ChannelInitializer<SocketChannel>(){ // (4)
@@ -68,7 +72,7 @@ public class IdGeneratorNettyServer implements IdGeneratorServer{
                     final ChannelPipeline pipeline = ch.pipeline();
                     pipeline.addLast(new IdResponseEncoder());//编码器和解码器可以公用实例
                     pipeline.addLast(new IdRequestDecoder());
-                    pipeline.addLast(new IdGeneratorHandler(commonShardIdGenerator));
+                    pipeline.addLast(new IdGeneratorHandler(commonShardIdGenerator,orderIdGenerator));
                 }
             })
             .option(ChannelOption.SO_BACKLOG, 128)          // (5)

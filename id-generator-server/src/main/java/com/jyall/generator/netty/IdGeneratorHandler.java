@@ -1,8 +1,9 @@
 package com.jyall.generator.netty;
 
-import com.jyall.generator.CommonShardIdGenerator;
+import com.jyall.generator.core.CommonShardIdGenerator;
 import com.jyall.generator.common.ErrorCodes;
 import com.jyall.generator.common.IdTypes;
+import com.jyall.generator.core.OrderIdGenerator;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -18,9 +19,10 @@ import org.slf4j.LoggerFactory;
 public class IdGeneratorHandler extends SimpleChannelInboundHandler<Integer>{
     private static final Logger logger = LoggerFactory.getLogger(IdGeneratorHandler.class);
     private CommonShardIdGenerator commonShardIdGenerator;
-
-    public IdGeneratorHandler(CommonShardIdGenerator commonShardIdGenerator){
+    private OrderIdGenerator orderIdGenerator;
+    public IdGeneratorHandler(CommonShardIdGenerator commonShardIdGenerator, OrderIdGenerator orderIdGenerator){
         this.commonShardIdGenerator = commonShardIdGenerator;
+        this.orderIdGenerator = orderIdGenerator;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class IdGeneratorHandler extends SimpleChannelInboundHandler<Integer>{
         if(idType ==IdTypes.COMMON_ID){//通用id生成器
             id = commonShardIdGenerator.nextId();
         }else if(idType == IdTypes.ORDER_ID) {
-            errorCode = ErrorCodes.SERVER_INTERNAL_ERROR;
+            id = orderIdGenerator.nextId();
         }else{//未知请求
             errorCode = ErrorCodes.BAD_REQUEST;
         }

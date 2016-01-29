@@ -1,7 +1,7 @@
-package com.jyall.generator;
+package com.jyall.generator.core;
 
+import com.jyall.generator.core.ShardIdGenerator;
 import com.jyall.generator.exception.InvalidSystemClockException;
-import java.util.Random;
 
 /**
  * 通用长long id
@@ -26,7 +26,7 @@ public class CommonShardIdGenerator extends ShardIdGenerator {
     /**
      * @param shardId 分片id
      */
-    protected CommonShardIdGenerator(long shardId) {
+    public CommonShardIdGenerator(long shardId) {
         super(shardId);
     }
 

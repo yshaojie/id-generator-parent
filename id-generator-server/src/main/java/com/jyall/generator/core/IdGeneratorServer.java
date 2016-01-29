@@ -1,4 +1,4 @@
-package com.jyall.generator;
+package com.jyall.generator.core;
 
 import com.google.common.io.Closer;
 import java.io.Closeable;

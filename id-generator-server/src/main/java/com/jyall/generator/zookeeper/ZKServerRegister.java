@@ -2,9 +2,7 @@ package com.jyall.generator.zookeeper;
 
 import com.google.common.base.Charsets;
 import com.jyall.commons.jackson.JsonUtil;
-import com.jyall.generator.ServerRegister;
-import java.util.HashMap;
-import java.util.Map;
+import com.jyall.generator.core.ServerRegister;
 
 import com.jyall.generator.common.RegisterBean;
 import com.jyall.generator.common.zookeeper.ZKPaths;

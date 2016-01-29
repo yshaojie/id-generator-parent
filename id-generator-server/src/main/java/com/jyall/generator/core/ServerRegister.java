@@ -1,4 +1,4 @@
-package com.jyall.generator;
+package com.jyall.generator.core;
 
 /**
  * 服务注册

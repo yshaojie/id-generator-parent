@@ -1,31 +1,35 @@
-package com.jyall.generator;
+package com.jyall.generator.core;
+
+import com.jyall.generator.exception.InvalidSystemClockException;
 
 /**
- * 10位订单生成器,后期会涨到11位,但是不会超过11位
- * "2045-01-01 00:00:00" 的订单号为66137620480
  * Created by shaojieyue
- * on 2015-01-26 13:22
+ * Create at 2016-01-29 15:11
  */
-public class OrderIdGenerator {
+public class OrderIdGenerator extends ShardIdGenerator {
+
     private final long epzepoch = 23300000L;
     private volatile long lastts = -1L;
     //序列号所占位数
-    private final int sequenceBits = 12;
+    private final int sequenceBits = 13;
     //序列号
     private volatile long sequence = 0L;
     //最大序列号
     private final long maxSequence = -1L ^ (-1L << sequenceBits);
 
-
-
-    private static class OrderIdGeneratorHolder{
-        //单例变量
-        private static final OrderIdGenerator orderIdGenerator = new OrderIdGenerator();
+    //时间戳需要往左移动的bit数=分区bit数+序列号占用bit数
+    private final long timestampLeftShift = SHARD_ID_BITS + sequenceBits;
+    //分区id需要左移位数
+    private final long maxShardIdLeftShift = sequenceBits;
+    /**
+     * @param shardId 分片id
+     */
+    public OrderIdGenerator(long shardId) {
+        super(shardId);
     }
 
-    private OrderIdGenerator(){}
-
-    public synchronized long generateLongId() throws InvalidSystemClockException {
+    @Override
+    public long nextId() throws InvalidSystemClockException {
         long timestamp = currentTimeMintue();
 
         //当前时间并未调整到下一个,则时间戳++
@@ -37,7 +41,6 @@ public class OrderIdGenerator {
                 timestamp = tilNextSeconds(lastts);
             }
         }else if(lastts > timestamp){
-            //当前时间戳小于已经记录的最大数,说明时间往回调整
             throw new InvalidSystemClockException("Clock moved backwards.  Refusing to generate id for "+ (
                     lastts - timestamp) +" milliseconds.");
         }else {
@@ -51,13 +54,15 @@ public class OrderIdGenerator {
     }
 
     /**
-     * 合并时间戳和序列号
-     * @param timestamp
-     * @param sequence
+     * 合并timestamp ，shardId，sequence用于生成id
+     * @param timestamp 当前时间戳
+     * @param sequence 当前循环到的序列号
      * @return
      */
-    private long combine(long timestamp,long sequence){
-        long id = ((timestamp - epzepoch) << (sequenceBits)) | sequence;
+    protected long combine(long timestamp,long sequence){
+        long id = ((timestamp - epzepoch)<< timestampLeftShift)//左移，为shardId和sequence腾出bit位
+                |(shardId << maxShardIdLeftShift)//左移，为sequence腾出bit位
+                |sequence;
         return id;
     }
 
@@ -83,13 +88,4 @@ public class OrderIdGenerator {
         return System.currentTimeMillis()/60000;
     }
 
-    public static OrderIdGenerator getInstance(){
-        return OrderIdGeneratorHolder.orderIdGenerator;
-    }
-
-    public class InvalidSystemClockException extends Exception {
-        public InvalidSystemClockException(String message){
-            super(message);
-        }
-    }
 }
