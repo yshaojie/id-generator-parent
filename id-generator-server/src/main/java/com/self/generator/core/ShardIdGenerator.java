@@ -8,7 +8,7 @@ import com.self.generator.exception.IllegalShardIdException;
  */
 public abstract class ShardIdGenerator implements IdGenerator {
     //分片id所占的bit数
-    protected static final long SHARD_ID_BITS = 4L;
+    protected static final long SHARD_ID_BITS = 2L;
     //最大分片id，也就是最大的分布式集群节点数
     protected static final long MAX_SHARD_ID = -1L ^ (-1L << SHARD_ID_BITS);
     //分片id

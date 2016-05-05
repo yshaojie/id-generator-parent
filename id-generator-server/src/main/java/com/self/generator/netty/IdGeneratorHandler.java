@@ -3,7 +3,7 @@ package com.self.generator.netty;
 import com.self.generator.core.CommonShardIdGenerator;
 import com.self.generator.common.ErrorCodes;
 import com.self.generator.common.IdTypes;
-import com.self.generator.core.OrderIdGenerator;
+import com.self.generator.core.ShortIdGenerator;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -19,10 +19,10 @@ import org.slf4j.LoggerFactory;
 public class IdGeneratorHandler extends SimpleChannelInboundHandler<Integer>{
     private static final Logger logger = LoggerFactory.getLogger(IdGeneratorHandler.class);
     private CommonShardIdGenerator commonShardIdGenerator;
-    private OrderIdGenerator orderIdGenerator;
-    public IdGeneratorHandler(CommonShardIdGenerator commonShardIdGenerator, OrderIdGenerator orderIdGenerator){
+    private ShortIdGenerator shortIdGenerator;
+    public IdGeneratorHandler(CommonShardIdGenerator commonShardIdGenerator, ShortIdGenerator shortIdGenerator){
         this.commonShardIdGenerator = commonShardIdGenerator;
-        this.orderIdGenerator = orderIdGenerator;
+        this.shortIdGenerator = shortIdGenerator;
     }
 
     @Override
@@ -42,12 +42,12 @@ public class IdGeneratorHandler extends SimpleChannelInboundHandler<Integer>{
         long errorCode = ErrorCodes.SERVER_INTERNAL_ERROR;
         if(idType ==IdTypes.COMMON_ID){//通用id生成器
             id = commonShardIdGenerator.nextId();
-        }else if(idType == IdTypes.ORDER_ID) {
-            id = orderIdGenerator.nextId();
+        }else if(idType == IdTypes.SHORT_ID) {
+            id = shortIdGenerator.nextId();
         }else{//未知请求
             errorCode = ErrorCodes.BAD_REQUEST;
         }
-
+        System.out.println(id);
         if(id > 0){//id生成成功
             ctx.writeAndFlush(id);
         }else {//生成失败,写错误码

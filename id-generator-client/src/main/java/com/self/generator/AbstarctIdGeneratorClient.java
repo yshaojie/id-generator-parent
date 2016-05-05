@@ -21,7 +21,7 @@ public abstract class AbstarctIdGeneratorClient implements IdGeneratorClient {
         return nextId(IdTypes.COMMON_ID);
     }
 
-    public long nextOrderId() throws WaitException{
-        return nextId(IdTypes.ORDER_ID);
+    public long nextShortId() throws WaitException{
+        return nextId(IdTypes.SHORT_ID);
     }
 }

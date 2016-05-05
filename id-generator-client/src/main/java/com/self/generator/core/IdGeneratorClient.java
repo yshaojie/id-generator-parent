@@ -20,6 +20,6 @@ public interface IdGeneratorClient extends Closeable{
      * 生成订单id
      * @return
      */
-    public long nextOrderId() throws WaitException;
+    public long nextShortId() throws WaitException;
 
 }

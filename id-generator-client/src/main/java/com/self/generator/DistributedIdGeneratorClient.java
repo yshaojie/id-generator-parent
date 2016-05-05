@@ -118,7 +118,6 @@ public class DistributedIdGeneratorClient extends AbstarctIdGeneratorClient {
         try {
             id = currentClient.nextId(idType);
         }catch (WaitException e){
-
         }
         if (id<0) {
             logger.warn("first get id fail. retry other clients. fail address={}",currentClient.getRemoteAddress());

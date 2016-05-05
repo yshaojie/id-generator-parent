@@ -21,7 +21,7 @@ public class DistributedIdDemo {
     private static final Logger logger = LoggerFactory.getLogger(DistributedIdDemo.class);
 
     public static void main(String[] args) throws InterruptedException, IOException {
-        ZKClient zkClient = ZKClient.getClient("localhost:2181");
+        ZKClient zkClient = ZKClient.getClient("192.168.100.110:2181");
         final DistributedIdGeneratorClient client = new DistributedIdGeneratorClient(zkClient);
         final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10, 10,
                 1L, TimeUnit.HOURS,
@@ -33,13 +33,14 @@ public class DistributedIdDemo {
         target.createNewFile();
         final FileWriter fileWriter = new FileWriter(target);
         final long start = System.currentTimeMillis();
-        for (int i = 0; ; i++) {
+        for (int i = 0;i<1000000 ; i++) {
             try {
                 threadPoolExecutor.submit(new Runnable() {
                     public void run() {
                         try {
-                            final long id = client.nextCommonId();
-//                            fileWriter.write(id+"\n");
+                            final long id = client.nextShortId();
+                            System.out.println(id);
+                            fileWriter.write(id+"\n");
                             if (id > 0) {
                                 final long counter = count.incrementAndGet();
                                 if (counter % 100000 == 0) {

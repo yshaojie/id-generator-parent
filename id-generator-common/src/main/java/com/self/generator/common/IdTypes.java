@@ -10,5 +10,5 @@ public class IdTypes{
     public static final int COMMON_ID = 1000;
 
     /**订单id*/
-    public static final int ORDER_ID = 1001;
+    public static final int SHORT_ID = 1001;
 }

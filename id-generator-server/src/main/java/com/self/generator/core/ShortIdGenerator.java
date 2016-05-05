@@ -6,12 +6,12 @@ import com.self.generator.exception.InvalidSystemClockException;
  * Created by shaojieyue
  * Create at 2016-01-29 15:11
  */
-public class OrderIdGenerator extends ShardIdGenerator {
+public class ShortIdGenerator extends ShardIdGenerator {
 
     private final long epzepoch = 23300000L;
     private volatile long lastts = -1L;
     //序列号所占位数
-    private final int sequenceBits = 13;
+    private final int sequenceBits = 16;
     //序列号
     private volatile long sequence = 0L;
     //最大序列号
@@ -24,7 +24,7 @@ public class OrderIdGenerator extends ShardIdGenerator {
     /**
      * @param shardId 分片id
      */
-    public OrderIdGenerator(long shardId) {
+    public ShortIdGenerator(long shardId) {
         super(shardId);
     }
 

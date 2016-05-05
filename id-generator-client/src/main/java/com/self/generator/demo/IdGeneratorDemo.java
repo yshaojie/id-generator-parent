@@ -14,12 +14,12 @@ public class IdGeneratorDemo{
         int port = 37451;
         String host = "localhost";
         final IdGeneratorNettyClient idGeneratorNettyClient = new IdGeneratorNettyClient(host, port);
-        for(int i = 0; i<100; i++){
+        for(int i = 0; i<10; i++){
             executorService.submit(new Runnable(){
                 public void run(){
                     final long commonId;
                     try{
-                        commonId = idGeneratorNettyClient.nextOrderId();
+                        commonId = idGeneratorNettyClient.nextShortId();
                         System.out.println(commonId);
                     }catch(WaitException e){
                         e.printStackTrace();

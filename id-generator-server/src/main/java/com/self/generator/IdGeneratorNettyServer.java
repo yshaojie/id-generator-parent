@@ -3,7 +3,7 @@ package com.self.generator;
 import com.self.generator.common.SystemConfig;
 import com.self.generator.core.CommonShardIdGenerator;
 import com.self.generator.core.IdGeneratorServer;
-import com.self.generator.core.OrderIdGenerator;
+import com.self.generator.core.ShortIdGenerator;
 import com.self.generator.core.ShardIdPreemption;
 import com.self.generator.netty.IdGeneratorHandler;
 import com.self.generator.netty.IdRequestDecoder;
@@ -63,7 +63,7 @@ public class IdGeneratorNettyServer implements IdGeneratorServer {
         ServerBootstrap bootstrap = new ServerBootstrap(); // (2)
         //保证IdGenerator的单个实例
         final CommonShardIdGenerator commonShardIdGenerator = new CommonShardIdGenerator(this.shardId);
-        final OrderIdGenerator orderIdGenerator = new OrderIdGenerator(this.shardId);
+        final ShortIdGenerator shortIdGenerator = new ShortIdGenerator(this.shardId);
         bootstrap.group(bossGroup, workerGroup)
             .channel(NioServerSocketChannel.class) // (3)
             .childHandler(new ChannelInitializer<SocketChannel>(){ // (4)
@@ -72,7 +72,7 @@ public class IdGeneratorNettyServer implements IdGeneratorServer {
                     final ChannelPipeline pipeline = ch.pipeline();
                     pipeline.addLast(new IdResponseEncoder());//编码器和解码器可以公用实例
                     pipeline.addLast(new IdRequestDecoder());
-                    pipeline.addLast(new IdGeneratorHandler(commonShardIdGenerator,orderIdGenerator));
+                    pipeline.addLast(new IdGeneratorHandler(commonShardIdGenerator, shortIdGenerator));
                 }
             })
             .option(ChannelOption.SO_BACKLOG, 128)          // (5)
