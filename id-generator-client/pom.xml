@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>id-generator-parent</artifactId>
-        <groupId>com.jyall</groupId>
+        <groupId>com.self</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <artifactId>id-generator-common</artifactId>
-            <groupId>com.jyall</groupId>
+            <groupId>com.self</groupId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -28,10 +28,6 @@
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jyall</groupId>
-            <artifactId>jackson-tools</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
